@@ -3,14 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.xiejinpeng.bannerview.BannerViewDemoActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    android:orientation="vertical"
+    tools:context=".Activity.BannerViewDemoActivity">
+
+    <com.example.xiejinpeng.bannerview.View.BannerView
+        android:id="@+id/bv_demo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.example.xiejinpeng.bannerview.View.BannerView>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_below="@+id/bv_demo"
+        android:id="@+id/ll_index"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:orientation="horizontal"></LinearLayout>
 </RelativeLayout>
