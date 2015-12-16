@@ -15,6 +15,7 @@
     </com.example.xiejinpeng.bannerview.View.BannerView>
 
     <LinearLayout
+        android:layout_marginTop="15dp"
         android:gravity="center"
         android:id="@+id/ll_index"
         android:layout_width="match_parent"
