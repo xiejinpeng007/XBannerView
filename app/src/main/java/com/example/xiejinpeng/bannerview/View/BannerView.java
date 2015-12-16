@@ -121,7 +121,10 @@ public class BannerView extends ViewPager {
                     return;
                 activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 int displayWidth = displayMetrics.widthPixels;
+                if (getParent().getClass().getName()== "RelativeLayout")
                 setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
+                else
+                    setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
                 bannerViewAdapter.notifyDataSetChanged();
 
                 if (i == 0)
