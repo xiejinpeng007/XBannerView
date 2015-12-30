@@ -38,19 +38,24 @@ public class BannerView extends ViewPager {
     private List<ImageView> indexViewList;
     private int bannerListSize;
     private long autoScrollPeriod = 0;
-    ImageLoader imageLoader;
-    Activity activity;
-    BannerViewAdapter bannerViewAdapter;
+    private Timer timer;
+    private ImageLoader imageLoader;
+    private Activity activity;
+    private BannerViewAdapter bannerViewAdapter;
 
     public BannerView(Context context) {
         super(context);
+        if (isInEditMode())
+            return;
         this.activity = (Activity) context;
 
     }
 
     public BannerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.activity = (Activity) context;
+        if (isInEditMode())
+            return;
+            this.activity = (Activity) context;
     }
 
 
@@ -64,9 +69,9 @@ public class BannerView extends ViewPager {
 
     }
 
-
+/*初始化Universal ImageLoader配置*/
     private void initUIL() {
-        //初始化UIL配置
+
         if (!ImageLoader.getInstance().isInited()) {
             ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(activity));
         }
@@ -119,16 +124,16 @@ public class BannerView extends ViewPager {
                 if (activity == null)
                     return;
                 activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int displayWidth = displayMetrics.widthPixels;
-                String a = getParent().getClass().getName();
+//                int displayWidth = displayMetrics.widthPixels;
+                int displayWidth = getWidth();
                 if (getParent().getClass().getName().equals("android.widget.RelativeLayout"))
-                    setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
+                    setLayoutParams(new RelativeLayout.LayoutParams(getWidth(), loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
                 else if (getParent().getClass().getName().equals("android.widget.LinearLayout"))
-                    setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
+                    setLayoutParams(new LinearLayout.LayoutParams(getWidth(), loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
                 bannerViewAdapter.notifyDataSetChanged();
 
                 if (i == 0)
-                    startAutoScrollperiod(autoScrollPeriod);
+                    startAutoScroll();
 
             }
         });
@@ -178,9 +183,9 @@ public class BannerView extends ViewPager {
         this.autoScrollPeriod = autoScrollPeriod;
     }
 
-    private void startAutoScrollperiod(long autoScrollPeriod) {
+    private void startAutoScroll() {
         final BannerHanlder bannerHanlder = new BannerHanlder();
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -198,9 +203,11 @@ public class BannerView extends ViewPager {
         }
     }
 
+    /*添加index的相关数据*/
+    /*放置Index的linearlayout,当前index图片，默认index图片,每个index的左上右下margin值*/
 
     private void setIndexData(LinearLayout llBannerindex, int Selected, int unSelected, int marginLeft, int marginTop, int marginRight, int marginBottom) {
-        //添加index图片
+
         indexViewList = new ArrayList<>();
         for (int i = 0; i < bannerListSize; i++) {
             ImageView imageView = new ImageView(getContext());
@@ -220,9 +227,14 @@ public class BannerView extends ViewPager {
     }
 
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        timer.cancel();
+    }
     /*根据手机的分辨率从 dp 的单位 转成为 px*/
 
-    public static int dpTppx(Context context, float dpValue) {
+    private static int dpTppx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
@@ -276,7 +288,7 @@ public class BannerView extends ViewPager {
         }
     }
 
-    /*根据list数据长度默认生成的Adapter*/
+    /*根据list数据长度自动生成的默认Adapter*/
     public class BannerViewAdapter extends PagerAdapter {
 
         List<ImageView> viewList;

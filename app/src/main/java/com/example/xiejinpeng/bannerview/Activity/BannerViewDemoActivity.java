@@ -57,6 +57,9 @@ public class BannerViewDemoActivity extends AppCompatActivity {
         datas.add(bannerData4);
         datas.add(bannerData5);
 
+    }
+
+    private void initBannerView() {
 
         listener = new BannerView.Listener() {
             @Override
@@ -70,9 +73,8 @@ public class BannerViewDemoActivity extends AppCompatActivity {
                 return datas.get(position).getLinkUri();
             }
         };
-    }
 
-    private void initBannerView() {
+
         new BannerView.Builder(bannerView)       //传入bannerView实例
                 .setBannerListSize(datas.size()) //必须设置的参数:图片个数
                 .setListener(listener)           //必须设置的参数:listener实例
