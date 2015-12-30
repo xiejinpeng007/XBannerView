@@ -33,11 +33,11 @@ import java.util.TimerTask;
  */
 public class BannerView extends ViewPager {
 
-    Listener listener;
-    List<ImageView> viewList;
-    List<ImageView> indexViewList;
-    int bannerListSize;
-    long period=0;
+    private Listener listener;
+    private List<ImageView> viewList;
+    private List<ImageView> indexViewList;
+    private int bannerListSize;
+    private long autoScrollPeriod = 0;
     ImageLoader imageLoader;
     Activity activity;
     BannerViewAdapter bannerViewAdapter;
@@ -54,10 +54,9 @@ public class BannerView extends ViewPager {
     }
 
 
-    public void setData(int bannerListSize,long period,Listener listener) {
+    private void setRequestData(int bannerListSize, Listener listener) {
         this.bannerListSize = bannerListSize;
         this.listener = listener;
-        this.period = period;
         initUIL();
         initViewList();
         bannerViewAdapter = new BannerViewAdapter(getViewList());
@@ -105,15 +104,15 @@ public class BannerView extends ViewPager {
 
     private void setBannerView(final int i) {
         DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
-        imageLoader.loadImage(listener.getImgUrl(i), options,new SimpleImageLoadingListener() {
+        imageLoader.loadImage(listener.getImgUrl(i), options, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 //设置图片和点击事件
                 viewList.get(i).setImageBitmap(loadedImage);
-                setBannerOnClickListener(viewList, i);
+                initDefaultBannerOnClickListener(viewList, i);
                 for (int n = 1; n <= 4; n++) {
                     viewList.get(i + (n * bannerListSize)).setImageDrawable(viewList.get(i).getDrawable());
-                    setBannerOnClickListener(viewList, i + n * bannerListSize);
+                    initDefaultBannerOnClickListener(viewList, i + n * bannerListSize);
                 }
                 //设置图片等比例填充满屏幕宽度
                 DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -122,62 +121,20 @@ public class BannerView extends ViewPager {
                 activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 int displayWidth = displayMetrics.widthPixels;
                 String a = getParent().getClass().getName();
-                if (getParent().getClass().getName().equals( "android.widget.RelativeLayout"))
-                setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
-                else if (getParent().getClass().getName().equals( "android.widget.LinearLayout"))
+                if (getParent().getClass().getName().equals("android.widget.RelativeLayout"))
+                    setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
+                else if (getParent().getClass().getName().equals("android.widget.LinearLayout"))
                     setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
                 bannerViewAdapter.notifyDataSetChanged();
 
                 if (i == 0)
-                    bannerAutoScroll(period);
+                    startAutoScrollperiod(autoScrollPeriod);
 
             }
         });
     }
 
-
-    public void bannerAutoScroll(long period) {
-        final BannerHanlder bannerHanlder = new BannerHanlder();
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                bannerHanlder.sendEmptyMessage(0);
-            }
-        }, period, period);
-    }
-
-    class BannerHanlder extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 0) {
-                setCurrentItem(getCurrentItem() + 1);
-            }
-        }
-    }
-
-
-    public void setIndexImage(LinearLayout llBannerindex,int Selected,int unSelected,int marginLeft,int marginTop,int marginRight,int marginBottom) {
-        //添加index图片
-        indexViewList = new ArrayList<>();
-        for (int i = 0; i < bannerListSize; i++) {
-            ImageView imageView = new ImageView(getContext());
-            if (i == 0) {
-                imageView.setImageResource(Selected);
-
-            } else {
-                imageView.setImageResource(unSelected);
-            }
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(dpTppx(getContext(), marginLeft),dpTppx(getContext(), marginTop), dpTppx(getContext(), marginRight), dpTppx(getContext(), marginBottom));
-            imageView.setLayoutParams(params);
-            indexViewList.add(imageView);
-            llBannerindex.addView(imageView);
-        }
-        setOnpageChangeListener();
-    }
-
-    private void setOnpageChangeListener() {
+    private void initDefaultOnpageChangeListener() {
         addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -200,7 +157,7 @@ public class BannerView extends ViewPager {
         });
     }
 
-    private void setBannerOnClickListener(List<ImageView> viewList,final int index) {
+    private void initDefaultBannerOnClickListener(List<ImageView> viewList, final int index) {
 
         viewList.get(index).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,18 +172,114 @@ public class BannerView extends ViewPager {
     }
 
 
-    //根据手机的分辨率从 dp 的单位 转成为 px
+    /*可选的参数设定*/
+
+    private void setAutoScrollPeriod(long autoScrollPeriod) {
+        this.autoScrollPeriod = autoScrollPeriod;
+    }
+
+    private void startAutoScrollperiod(long autoScrollPeriod) {
+        final BannerHanlder bannerHanlder = new BannerHanlder();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                bannerHanlder.sendEmptyMessage(0);
+            }
+        }, autoScrollPeriod, autoScrollPeriod);
+    }
+
+    class BannerHanlder extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0) {
+                setCurrentItem(getCurrentItem() + 1);
+            }
+        }
+    }
+
+
+    private void setIndexData(LinearLayout llBannerindex, int Selected, int unSelected, int marginLeft, int marginTop, int marginRight, int marginBottom) {
+        //添加index图片
+        indexViewList = new ArrayList<>();
+        for (int i = 0; i < bannerListSize; i++) {
+            ImageView imageView = new ImageView(getContext());
+            if (i == 0) {
+                imageView.setImageResource(Selected);
+
+            } else {
+                imageView.setImageResource(unSelected);
+            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(dpTppx(getContext(), marginLeft), dpTppx(getContext(), marginTop), dpTppx(getContext(), marginRight), dpTppx(getContext(), marginBottom));
+            imageView.setLayoutParams(params);
+            indexViewList.add(imageView);
+            llBannerindex.addView(imageView);
+        }
+        initDefaultOnpageChangeListener();
+    }
+
+
+    /*根据手机的分辨率从 dp 的单位 转成为 px*/
 
     public static int dpTppx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
+    /*建造器*/
+    public static class Builder {
+        private int bannerListSize;
+        private BannerView.Listener listener;
+        private long autoScrollPeriod = 0;
+        private BannerView bannerView;
+        private boolean isSetIndexData = false;
+        private LinearLayout llBannerindex;
+        private int Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom;
 
+        public Builder(BannerView bannerView) {
+            this.bannerView = bannerView;
+        }
+
+        public Builder setBannerListSize(int bannerListSize) {
+            this.bannerListSize = bannerListSize;
+            return this;
+        }
+
+        public Builder setListener(Listener listener) {
+            this.listener = listener;
+            return this;
+        }
+
+        public Builder setAutoScrollPeriod(long autoScrollPeriod) {
+            this.autoScrollPeriod = autoScrollPeriod;
+            return this;
+        }
+
+        public Builder setIndexData(LinearLayout llBannerindex, int Selected, int unSelected, int marginLeft, int marginTop, int marginRight, int marginBottom) {
+            isSetIndexData = true;
+            this.llBannerindex = llBannerindex;
+            this.Selected = Selected;
+            this.unSelected = unSelected;
+            this.marginLeft = marginLeft;
+            this.marginTop = marginTop;
+            this.marginBottom = marginBottom;
+            return this;
+        }
+
+        public BannerView create() {
+            bannerView.setRequestData(bannerListSize, listener);
+            bannerView.setAutoScrollPeriod(autoScrollPeriod);
+            if (isSetIndexData)
+                bannerView.setIndexData(llBannerindex, Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom);
+            return bannerView;
+        }
+    }
+
+    /*根据list数据长度默认生成的Adapter*/
     public class BannerViewAdapter extends PagerAdapter {
 
         List<ImageView> viewList;
-
 
 
         public BannerViewAdapter(List<ImageView> viewList) {
@@ -252,7 +305,7 @@ public class BannerView extends ViewPager {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            View view = viewList.get(position % (viewList.size() ));
+            View view = viewList.get(position % (viewList.size()));
             container.removeView(view);
         }
 
@@ -264,8 +317,9 @@ public class BannerView extends ViewPager {
     }
 
 
-    public interface Listener{
+    public interface Listener {
         String getImgUrl(int position);
+
         String getOnClickUrl(int position);
     }
 

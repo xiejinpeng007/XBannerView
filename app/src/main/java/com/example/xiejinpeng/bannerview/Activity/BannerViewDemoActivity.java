@@ -23,16 +23,17 @@ public class BannerViewDemoActivity extends AppCompatActivity {
     List<BannerData> datas;
     BannerView.Listener listener;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_banner_view_demo);
         ButterKnife.bind(this);
-        initData();
+        initDefaultData();
         initBannerView();
     }
 
-    private void initData(){
+    private void initDefaultData() {
         BannerData bannerData = new BannerData();
         bannerData.setImageUri("http://apriimagesbucket.s3.amazonaws.com/1447325912.png");
         bannerData.setLinkUri("http://www.yahoo.co.jp");
@@ -49,20 +50,21 @@ public class BannerViewDemoActivity extends AppCompatActivity {
         bannerData5.setImageUri("http://apriimagesbucket.s3.amazonaws.com/1447325984.png");
         bannerData5.setLinkUri("http://www.yahoo.co.jp");
 
-
-        datas =new ArrayList<>();
+        datas = new ArrayList<>();
         datas.add(bannerData);
         datas.add(bannerData2);
         datas.add(bannerData3);
         datas.add(bannerData4);
         datas.add(bannerData5);
 
-         listener = new BannerView.Listener() {
+
+        listener = new BannerView.Listener() {
             @Override
             public String getImgUrl(int position) {
                 return datas.get(position).getImageUri();
             }
-            //不需要点击事件则无需设置
+
+            //不需要点击事件则返回null即可
             @Override
             public String getOnClickUrl(int position) {
                 return datas.get(position).getLinkUri();
@@ -70,17 +72,16 @@ public class BannerViewDemoActivity extends AppCompatActivity {
         };
     }
 
-    private void initBannerView(){
-        //唯一必须设置的方法
-        //参数分别是广告数量;实例化的BannerView.Listenner
-        bannerView.setData(datas.size(),7000,listener);
+    private void initBannerView() {
+        new BannerView.Builder(bannerView)       //传入bannerView实例
+                .setBannerListSize(datas.size()) //必须设置的参数:图片个数
+                .setListener(listener)           //必须设置的参数:listener实例
+                .setAutoScrollPeriod(7000)       //可选设置:滚动的时间间隔
+                .setIndexData(indexView, R.mipmap.page_control_on, R.mipmap.page_control_off, 17, 0, 0, 0)  //可选设置:放置Index的linearlayout,当前index图片，默认index图片,每个index的左上右下margin值
+                .create();
 
-//        //选择设置的方法
-//        //参数为放置index的LinearLayout;选中的image,未选中的image,每个index的左上右下margin值
-        bannerView.setIndexImage(indexView,R.mipmap.page_control_on,R.mipmap.page_control_off,17,0,0,0);
-//
-//        //自动滚动的事件 ms
-        bannerView.bannerAutoScroll(7000);
+
     }
+
 
 }
