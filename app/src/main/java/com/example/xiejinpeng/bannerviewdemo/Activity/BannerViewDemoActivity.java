@@ -1,12 +1,12 @@
-package com.example.xiejinpeng.bannerview.Activity;
+package com.example.xiejinpeng.bannerviewdemo.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
-import com.example.xiejinpeng.bannerview.R;
-import com.example.xiejinpeng.bannerview.View.BannerView;
-import com.example.xiejinpeng.bannerview.model.BannerData;
+import com.example.xiejinpeng.bannerview.BannerView;
+import com.example.xiejinpeng.bannerviewdemo.R;
+import com.example.xiejinpeng.bannerviewdemo.model.BannerData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +80,7 @@ public class BannerViewDemoActivity extends AppCompatActivity {
                 .setBannerSize(bannerDataList.size()) //必须设置的参数:图片个数
                 .setListener(listener)           //必须设置的参数:BannerView.Listenr实例
                 .setAutoScrollPeriod(7000)       //可选设置:滚动的时间间隔
+                .isLoop(false)
                 .setIndexData(indexView, R.mipmap.page_control_on, R.mipmap.page_control_off, 17, 0, 0, 0)  //可选设置:放置Index的Linearlayout,当前index图片，默认index图片,每个index的左上右下margin值
                 .create();
 

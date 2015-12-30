@@ -1,4 +1,4 @@
-package com.example.xiejinpeng.bannerviewdemo;
+package com.example.xiejinpeng.bannerview;
 
 import org.junit.Test;
 

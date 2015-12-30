@@ -7,12 +7,12 @@
     android:orientation="vertical"
     tools:context=".Activity.BannerViewDemoActivity">
 
-    <com.example.xiejinpeng.bannerview.View.BannerView
+    <com.example.xiejinpeng.bannerview.BannerView
         android:id="@+id/bv_demo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.example.xiejinpeng.bannerview.View.BannerView>
+    </com.example.xiejinpeng.bannerview.BannerView>
 
     <LinearLayout
         android:layout_marginTop="15dp"

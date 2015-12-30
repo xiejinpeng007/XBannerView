@@ -1,4 +1,4 @@
-package com.example.xiejinpeng.bannerview.View;
+package com.example.xiejinpeng.bannerview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.example.xiejinpeng.bannerview.R;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -42,6 +42,7 @@ public class BannerView extends ViewPager {
     private ImageLoader imageLoader;
     private Activity activity;
     private BannerViewAdapter bannerViewAdapter;
+    private boolean isLoop = true;
 
     public BannerView(Context context) {
         super(context);
@@ -64,7 +65,7 @@ public class BannerView extends ViewPager {
         this.listener = listener;
         initUIL();
         initViewList();
-        bannerViewAdapter = new BannerViewAdapter(getViewList());
+        bannerViewAdapter = new BannerViewAdapter(getViewList(),isLoop);
         setAdapter(bannerViewAdapter);
 
     }
@@ -114,10 +115,10 @@ public class BannerView extends ViewPager {
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 //设置图片和点击事件
                 viewList.get(i).setImageBitmap(loadedImage);
-                initDefaultBannerOnClickListener(viewList, i);
+                setBannerOnClickListener(viewList, i);
                 for (int n = 1; n <= 4; n++) {
                     viewList.get(i + (n * bannerListSize)).setImageDrawable(viewList.get(i).getDrawable());
-                    initDefaultBannerOnClickListener(viewList, i + n * bannerListSize);
+                    setBannerOnClickListener(viewList, i + n * bannerListSize);
                 }
                 //设置图片等比例填充满屏幕宽度
                 DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -139,7 +140,7 @@ public class BannerView extends ViewPager {
         });
     }
 
-    private void initDefaultOnpageChangeListener() {
+    private void setOnpageChangeListener(final int selected, final int unSelected) {
         addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -149,9 +150,9 @@ public class BannerView extends ViewPager {
             @Override
             public void onPageSelected(int position) {
                 for (int i = 0; i < indexViewList.size(); i++) {
-                    indexViewList.get(i).setImageResource(R.mipmap.page_control_off);
+                    indexViewList.get(i).setImageResource(selected);
                 }
-                indexViewList.get(position % bannerListSize).setImageResource(R.mipmap.page_control_on);
+                indexViewList.get(position % bannerListSize).setImageResource(unSelected);
 
             }
 
@@ -162,9 +163,9 @@ public class BannerView extends ViewPager {
         });
     }
 
-    private void initDefaultBannerOnClickListener(List<ImageView> viewList, final int index) {
+    private void setBannerOnClickListener(List<ImageView> viewList, final int index) {
 
-        viewList.get(index).setOnClickListener(new View.OnClickListener() {
+        viewList.get(index).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!listener.getOnClickUrl(index % bannerListSize).isEmpty()) {
@@ -178,6 +179,9 @@ public class BannerView extends ViewPager {
 
 
     /*可选的参数设定*/
+    private void setIsLoop(boolean isLoop) {
+        this.isLoop = isLoop;
+    }
 
     private void setAutoScrollPeriod(long autoScrollPeriod) {
         this.autoScrollPeriod = autoScrollPeriod;
@@ -223,7 +227,7 @@ public class BannerView extends ViewPager {
             indexViewList.add(imageView);
             llBannerindex.addView(imageView);
         }
-        initDefaultOnpageChangeListener();
+        setOnpageChangeListener(Selected,unSelected);
     }
 
 
@@ -245,7 +249,7 @@ public class BannerView extends ViewPager {
         private BannerView.Listener listener;
         private long autoScrollPeriod = 0;
         private BannerView bannerView;
-        private boolean isSetIndexData = false;
+        private boolean isSetIndexData = false,isLoop =true;
         private LinearLayout llBannerindex;
         private int Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom;
 
@@ -275,15 +279,23 @@ public class BannerView extends ViewPager {
             this.unSelected = unSelected;
             this.marginLeft = marginLeft;
             this.marginTop = marginTop;
+            this.marginRight = marginRight;
             this.marginBottom = marginBottom;
+            return this;
+        }
+
+        public Builder isLoop(boolean isLoop) {
+            this.isLoop = isLoop;
             return this;
         }
 
         public BannerView create() {
             bannerView.setRequestData(bannerSize, listener);
             bannerView.setAutoScrollPeriod(autoScrollPeriod);
+            bannerView.setIsLoop(isLoop);
             if (isSetIndexData)
                 bannerView.setIndexData(llBannerindex, Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom);
+
             return bannerView;
         }
     }
@@ -292,15 +304,17 @@ public class BannerView extends ViewPager {
     public class BannerViewAdapter extends PagerAdapter {
 
         List<ImageView> viewList;
+        boolean isLoop = true;
 
-
-        public BannerViewAdapter(List<ImageView> viewList) {
+        public BannerViewAdapter(List<ImageView> viewList,boolean isLoop) {
             this.viewList = viewList;
+            this.isLoop = isLoop;
         }
 
         @Override
         public int getItemPosition(Object object) {
-            return POSITION_NONE;
+            boolean test = isLoop;
+            return isLoop?POSITION_NONE:(viewList.size()/5);
         }
 
         @Override

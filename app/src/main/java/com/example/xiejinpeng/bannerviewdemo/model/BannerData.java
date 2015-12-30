@@ -1,4 +1,4 @@
-package com.example.xiejinpeng.bannerview.model;
+package com.example.xiejinpeng.bannerviewdemo.model;
 
 /**
  * Created by xiejinpeng on 15/12/16.
