@@ -12,7 +12,7 @@
 ##使用：
 ####第一步完成用于获取list数据的回调接口BannerView.Listenner
 
-        listener = new BannerView.Listener() {
+        BannerView.Listener listener = new BannerView.Listener() {
             /*获取图片的imageUrl*/
             @Override
             public String getImgUrl(int position) {
