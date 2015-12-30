@@ -55,7 +55,7 @@ public class BannerView extends ViewPager {
         super(context, attrs);
         if (isInEditMode())
             return;
-            this.activity = (Activity) context;
+        this.activity = (Activity) context;
     }
 
 
@@ -69,7 +69,7 @@ public class BannerView extends ViewPager {
 
     }
 
-/*初始化Universal ImageLoader配置*/
+    /*初始化Universal ImageLoader配置*/
     private void initUIL() {
 
         if (!ImageLoader.getInstance().isInited()) {
@@ -241,7 +241,7 @@ public class BannerView extends ViewPager {
 
     /*建造器*/
     public static class Builder {
-        private int bannerListSize;
+        private int bannerSize;
         private BannerView.Listener listener;
         private long autoScrollPeriod = 0;
         private BannerView bannerView;
@@ -253,8 +253,8 @@ public class BannerView extends ViewPager {
             this.bannerView = bannerView;
         }
 
-        public Builder setBannerListSize(int bannerListSize) {
-            this.bannerListSize = bannerListSize;
+        public Builder setBannerSize(int bannerSize) {
+            this.bannerSize = bannerSize;
             return this;
         }
 
@@ -280,7 +280,7 @@ public class BannerView extends ViewPager {
         }
 
         public BannerView create() {
-            bannerView.setRequestData(bannerListSize, listener);
+            bannerView.setRequestData(bannerSize, listener);
             bannerView.setAutoScrollPeriod(autoScrollPeriod);
             if (isSetIndexData)
                 bannerView.setIndexData(llBannerindex, Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom);
