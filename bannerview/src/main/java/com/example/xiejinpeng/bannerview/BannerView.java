@@ -65,7 +65,7 @@ public class BannerView extends ViewPager {
         this.listener = listener;
         initUIL();
         initViewList();
-        bannerViewAdapter = new BannerViewAdapter(getViewList(),isLoop);
+        bannerViewAdapter = new BannerViewAdapter(getViewList(), isLoop);
         setAdapter(bannerViewAdapter);
 
     }
@@ -101,6 +101,7 @@ public class BannerView extends ViewPager {
     @Override
     public void setAdapter(PagerAdapter adapter) {
         super.setAdapter(adapter);
+        if (isLoop)
         setCurrentItem(viewList.size() * 100 + bannerListSize);
         for (int i = 0; i <= bannerListSize - 1; i++) {
             setBannerView(i);
@@ -150,10 +151,9 @@ public class BannerView extends ViewPager {
             @Override
             public void onPageSelected(int position) {
                 for (int i = 0; i < indexViewList.size(); i++) {
-                    indexViewList.get(i).setImageResource(selected);
+                    indexViewList.get(i).setImageResource(unSelected);
                 }
-                indexViewList.get(position % bannerListSize).setImageResource(unSelected);
-
+                indexViewList.get(position % bannerListSize).setImageResource(selected);
             }
 
             @Override
@@ -227,7 +227,7 @@ public class BannerView extends ViewPager {
             indexViewList.add(imageView);
             llBannerindex.addView(imageView);
         }
-        setOnpageChangeListener(Selected,unSelected);
+        setOnpageChangeListener(Selected, unSelected);
     }
 
 
@@ -249,7 +249,7 @@ public class BannerView extends ViewPager {
         private BannerView.Listener listener;
         private long autoScrollPeriod = 0;
         private BannerView bannerView;
-        private boolean isSetIndexData = false,isLoop =true;
+        private boolean isSetIndexData = false, isLoop = true;
         private LinearLayout llBannerindex;
         private int Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom;
 
@@ -290,9 +290,9 @@ public class BannerView extends ViewPager {
         }
 
         public BannerView create() {
-            bannerView.setRequestData(bannerSize, listener);
             bannerView.setAutoScrollPeriod(autoScrollPeriod);
             bannerView.setIsLoop(isLoop);
+            bannerView.setRequestData(bannerSize, listener);
             if (isSetIndexData)
                 bannerView.setIndexData(llBannerindex, Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom);
 
@@ -306,20 +306,25 @@ public class BannerView extends ViewPager {
         List<ImageView> viewList;
         boolean isLoop = true;
 
-        public BannerViewAdapter(List<ImageView> viewList,boolean isLoop) {
+//        public void setIsLoop(boolean isLoop) {
+//            this.isLoop = isLoop;
+//        }
+
+
+        public BannerViewAdapter(List<ImageView> viewList, boolean isLoop) {
             this.viewList = viewList;
             this.isLoop = isLoop;
         }
 
+
         @Override
         public int getItemPosition(Object object) {
-            boolean test = isLoop;
-            return isLoop?POSITION_NONE:(viewList.size()/5);
+            return POSITION_NONE;
         }
 
         @Override
         public int getCount() {
-            return Integer.MAX_VALUE;
+            return isLoop ? Integer.MAX_VALUE : (viewList.size() / 5);
         }
 
         @Override
