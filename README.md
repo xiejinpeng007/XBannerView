@@ -4,9 +4,19 @@
 ####<li>支持的功能：图片无限滚动，点击图片跳转，自定义指示器位置和图片以及margin参数。
 ####<li>支持的数据：大部分banner的API都会给一个包含imageurl和linkurl的ArrayList。所以控件支持的也是这样的数据。
 ##依赖：
-####本控件暂时没有上传公共maven库，取出BannerView.class到项目中即可
+####在project build.gradle中加入仓库url
+        	allprojects {
+		repositories {
+			...
+			maven { url "https://jitpack.io" }
+		}
+	}
+	
+####在module build.gradle中加入依赖
+    dependencies {
+	        compile 'com.github.xiejinpeng007:BannerView:1.0'
+	}
 ####图片加载器依赖于Universal ImageLoader
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 
 
 ##使用：
