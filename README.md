@@ -5,7 +5,7 @@
 ####<li>支持的数据：大部分banner的API都会给一个包含imageurl和linkurl的ArrayList。所以控件支持的也是这样的数据。
 ##依赖：
 ####在project build.gradle中加入仓库url
-        	allprojects {
+        allprojects {
 		repositories {
 			...
 			maven { url "https://jitpack.io" }
