@@ -62,29 +62,40 @@ public class BannerViewDemoActivity extends AppCompatActivity {
     private void initBannerView() {
 
         listener = new BannerView.Listener() {
-            /*获取图片的imageUrl*/
+            /**
+             * 获取图片的imageUrl
+             */
+
             @Override
             public String getImgUrl(int position) {
                 return bannerDataList.get(position).getImageUri();
             }
-            /*获取点击后跳转的OnClickUrl*/
-            /*不需要点击事件则返回null即可*/
+
+            /**
+             *    获取点击后跳转的OnClickUrl
+             *    不需要点击事件则返回null即可
+             */
+
             @Override
             public String getOnClickUrl(int position) {
                 return bannerDataList.get(position).getLinkUri();
             }
         };
 
+        /**
+         * 构造方法参数 控件bannerView的实例,图片个数,用于获取url的接口
+         * 可选设置: setAutoScrollPeriod(int period) 滚动的时间间隔
+         *          isLoop(boolean isLoop)          是否无限循环
+         *          setIndexData(LinearLayout bannerIndexLinearLayout, int SelectedRes, int unSelectedRes, int marginStart, int marginTop, int marginEnd, int marginBottom)
+         *                                          放置Index的linearlayout,选中的index图片,未选中的index图片,每个index图片的margin值
+         */
 
-        new BannerView.Builder(bannerView)       //必须设置的参数:控件bannerView的实例
-                .setBannerSize(bannerDataList.size()) //必须设置的参数:图片个数
-                .setListener(listener)           //必须设置的参数:BannerView.Listenr实例
-                .setAutoScrollPeriod(7000)       //可选设置:滚动的时间间隔
-                .isLoop(false)                   //可选设置:是否无限循环
-                .setIndexData(indexView, R.mipmap.page_control_on, R.mipmap.page_control_off, 17, 0, 0, 0)  //可选设置:放置Index的Linearlayout,当前index图片，默认index图片,每个index的左上右下margin值
+
+        new BannerView.Builder(bannerView, bannerDataList.size(), listener)
+                .setAutoScrollPeriod(7000)
+                .isLoop(false)
+                .setIndexData(indexView, R.mipmap.page_control_on, R.mipmap.page_control_off, 17, 0, 0, 0)
                 .create();
-
-
     }
 
 
