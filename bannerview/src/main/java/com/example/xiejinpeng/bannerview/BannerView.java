@@ -309,6 +309,10 @@ public class BannerView extends ViewPager {
             return this;
         }
 
+        /**
+         * @param isLoop 设置是否循环
+         */
+
         public Builder isLoop(boolean isLoop) {
             this.isLoop = isLoop;
             return this;
