@@ -38,9 +38,7 @@
 
 ####第二步使用BannerView内置的Builder完成参数设置
 
-        new BannerView.Builder(bannerView)       //*必须设置的参数:控件bannerView的实例
-                .setBannerSize(bannerDataList.size()) //*必须设置的参数:图片个数
-                .setListener(listener)           //*必须设置的参数:BannerView.Listenr实例
+        new BannerView.Builder(bannerView,bannerDataList.size(),listener) //*必须设置的参数:控件bannerView的实例,图片个数,用于获取url的的接口
                 .setAutoScrollPeriod(7000)       //可选设置:滚动的时间间隔
                 .isLoop(false)                   //可选设置:是否无限循环
                 .setIndexData(indexView, R.mipmap.page_control_on, R.mipmap.page_control_off, 17, 0, 0, 0)  //可选设置:放置Index的Linearlayout,当前index图片，默认index图片,每个index的左上右下margin值
