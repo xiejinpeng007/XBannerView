@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -60,17 +61,18 @@ public class BannerView extends ViewPager {
     }
 
 
-    private void setRequestData(int bannerListSize, Listener listener) {
+    private void initBannerView(int bannerListSize, Listener listener) {
         this.bannerListSize = bannerListSize;
         this.listener = listener;
         initUIL();
         initViewList();
-        bannerViewAdapter = new BannerViewAdapter(getViewList(), isLoop);
-        setAdapter(bannerViewAdapter);
+        initAdapter();
 
     }
 
-    /*初始化Universal ImageLoader配置*/
+
+    //初始化Universal ImageLoader配置
+
     private void initUIL() {
 
         if (!ImageLoader.getInstance().isInited()) {
@@ -94,6 +96,11 @@ public class BannerView extends ViewPager {
 
     }
 
+    private void initAdapter() {
+        bannerViewAdapter = new BannerViewAdapter(getViewList(), isLoop);
+        setAdapter(bannerViewAdapter);
+    }
+
     public List<ImageView> getViewList() {
         return viewList;
     }
@@ -102,7 +109,7 @@ public class BannerView extends ViewPager {
     public void setAdapter(PagerAdapter adapter) {
         super.setAdapter(adapter);
         if (isLoop)
-        setCurrentItem(viewList.size() * 100 + bannerListSize);
+            setCurrentItem(viewList.size() * 100 + bannerListSize);
         for (int i = 0; i <= bannerListSize - 1; i++) {
             setBannerView(i);
         }
@@ -126,7 +133,7 @@ public class BannerView extends ViewPager {
                 if (activity == null)
                     return;
                 activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-//                int displayWidth = displayMetrics.widthPixels;
+                //int displayWidth = displayMetrics.widthPixels;
                 int displayWidth = getWidth();
                 if (getParent().getClass().getName().equals("android.widget.RelativeLayout"))
                     setLayoutParams(new RelativeLayout.LayoutParams(getWidth(), loadedImage.getHeight() * displayWidth / loadedImage.getWidth()));
@@ -141,7 +148,7 @@ public class BannerView extends ViewPager {
         });
     }
 
-    private void setOnpageChangeListener(final int selected, final int unSelected) {
+    private void setOnpageChangeListener(final int selectedRes, final int unSelectedRes) {
         addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -151,9 +158,9 @@ public class BannerView extends ViewPager {
             @Override
             public void onPageSelected(int position) {
                 for (int i = 0; i < indexViewList.size(); i++) {
-                    indexViewList.get(i).setImageResource(unSelected);
+                    indexViewList.get(i).setImageResource(unSelectedRes);
                 }
-                indexViewList.get(position % bannerListSize).setImageResource(selected);
+                indexViewList.get(position % bannerListSize).setImageResource(selectedRes);
             }
 
             @Override
@@ -177,8 +184,6 @@ public class BannerView extends ViewPager {
         });
     }
 
-
-    /*可选的参数设定*/
     private void setIsLoop(boolean isLoop) {
         this.isLoop = isLoop;
     }
@@ -207,43 +212,49 @@ public class BannerView extends ViewPager {
         }
     }
 
-    /*添加index的相关数据*/
-    /*放置Index的linearlayout,当前index图片，默认index图片,每个index的左上右下margin值*/
 
-    private void setIndexData(LinearLayout llBannerindex, int Selected, int unSelected, int marginLeft, int marginTop, int marginRight, int marginBottom) {
+    private void setIndexData(LinearLayout bannerIndexLinearLayout, int SelectedRes, int unSelectedRes, int marginStart, int marginTop, int marginEnd, int marginBottom) {
 
         indexViewList = new ArrayList<>();
         for (int i = 0; i < bannerListSize; i++) {
             ImageView imageView = new ImageView(getContext());
             if (i == 0) {
-                imageView.setImageResource(Selected);
+                imageView.setImageResource(SelectedRes);
 
             } else {
-                imageView.setImageResource(unSelected);
+                imageView.setImageResource(unSelectedRes);
             }
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(dpTppx(getContext(), marginLeft), dpTppx(getContext(), marginTop), dpTppx(getContext(), marginRight), dpTppx(getContext(), marginBottom));
+            params.setMargins(dpTppx(getContext(), marginStart), dpTppx(getContext(), marginTop), dpTppx(getContext(), marginEnd), dpTppx(getContext(), marginBottom));
             imageView.setLayoutParams(params);
             indexViewList.add(imageView);
-            llBannerindex.addView(imageView);
+            bannerIndexLinearLayout.addView(imageView);
         }
-        setOnpageChangeListener(Selected, unSelected);
+        setOnpageChangeListener(SelectedRes, unSelectedRes);
     }
 
+    //取消用于控制轮播的timer
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         timer.cancel();
     }
-    /*根据手机的分辨率从 dp 的单位 转成为 px*/
+
+    //根据手机的分辨率从 dp 的单位 转成为 px
 
     private static int dpTppx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
-    /*建造器*/
+
+    /**
+     *  Buider
+     *  所有参数均由Buider进行设置
+     */
+
+
     public static class Builder {
         private int bannerSize;
         private BannerView.Listener listener;
@@ -251,35 +262,49 @@ public class BannerView extends ViewPager {
         private BannerView bannerView;
         private boolean isSetIndexData = false, isLoop = true;
         private LinearLayout llBannerindex;
-        private int Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom;
+        private int Selected, unSelected, marginStart, marginTop, marginEnd, marginBottom;
 
-        public Builder(BannerView bannerView) {
+        /**
+         * 构造方法参数
+         *
+         * @param bannerView bannerView的实例
+         * @param bannerSize bannerView显示图片的个数
+         * @param listener   用于获取banner图片url和jumpUrl的接口
+         */
+
+        public Builder(BannerView bannerView, int bannerSize, BannerView.Listener listener) {
             this.bannerView = bannerView;
-        }
-
-        public Builder setBannerSize(int bannerSize) {
             this.bannerSize = bannerSize;
-            return this;
+            this.listener = listener;
         }
 
-        public Builder setListener(Listener listener) {
-            this.listener = listener;
-            return this;
-        }
+        /**
+         * @param autoScrollPeriod 自动轮播的时间间隔 单位：ms
+         */
 
         public Builder setAutoScrollPeriod(long autoScrollPeriod) {
             this.autoScrollPeriod = autoScrollPeriod;
             return this;
         }
 
-        public Builder setIndexData(LinearLayout llBannerindex, int Selected, int unSelected, int marginLeft, int marginTop, int marginRight, int marginBottom) {
+
+        /**
+         * 添加index的相关数据
+         *
+         * @param bannerIndexLinearLayout 放置Index的linearlayout
+         * @param SelectedRes             选中的index图片
+         * @param unSelectedRes           未选中的index图片
+         * @param marginStart             每个index图片的margin值
+         */
+
+        public Builder setIndexData(LinearLayout bannerIndexLinearLayout, int SelectedRes, int unSelectedRes, int marginStart, int marginTop, int marginEnd, int marginBottom) {
             isSetIndexData = true;
-            this.llBannerindex = llBannerindex;
-            this.Selected = Selected;
-            this.unSelected = unSelected;
-            this.marginLeft = marginLeft;
+            this.llBannerindex = bannerIndexLinearLayout;
+            this.Selected = SelectedRes;
+            this.unSelected = unSelectedRes;
+            this.marginStart = marginStart;
             this.marginTop = marginTop;
-            this.marginRight = marginRight;
+            this.marginEnd = marginEnd;
             this.marginBottom = marginBottom;
             return this;
         }
@@ -292,24 +317,20 @@ public class BannerView extends ViewPager {
         public BannerView create() {
             bannerView.setAutoScrollPeriod(autoScrollPeriod);
             bannerView.setIsLoop(isLoop);
-            bannerView.setRequestData(bannerSize, listener);
+            bannerView.initBannerView(bannerSize, listener);
             if (isSetIndexData)
-                bannerView.setIndexData(llBannerindex, Selected, unSelected, marginLeft, marginTop, marginRight, marginBottom);
+                bannerView.setIndexData(llBannerindex, Selected, unSelected, marginStart, marginTop, marginEnd, marginBottom);
 
             return bannerView;
         }
     }
 
-    /*根据list数据长度自动生成的默认Adapter*/
+    //根据list数据长度自动生成的默认Adapter
+
     public class BannerViewAdapter extends PagerAdapter {
 
         List<ImageView> viewList;
         boolean isLoop = true;
-
-//        public void setIsLoop(boolean isLoop) {
-//            this.isLoop = isLoop;
-//        }
-
 
         public BannerViewAdapter(List<ImageView> viewList, boolean isLoop) {
             this.viewList = viewList;
