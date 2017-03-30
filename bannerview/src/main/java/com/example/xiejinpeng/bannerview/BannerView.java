@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -148,7 +146,7 @@ public class BannerView extends ViewPager {
         });
     }
 
-    private void setOnpageChangeListener(final int selectedRes, final int unSelectedRes) {
+    private void setOnPageChangeListener(final int selectedRes, final int unSelectedRes) {
         addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -213,7 +211,13 @@ public class BannerView extends ViewPager {
     }
 
 
-    private void setIndexData(LinearLayout bannerIndexLinearLayout, int SelectedRes, int unSelectedRes, int marginStart, int marginTop, int marginEnd, int marginBottom) {
+    private void setIndexData(LinearLayout bannerIndexLinearLayout,
+                              int SelectedRes,
+                              int unSelectedRes,
+                              int marginStart,
+                              int marginTop,
+                              int marginEnd,
+                              int marginBottom) {
 
         indexViewList = new ArrayList<>();
         for (int i = 0; i < bannerListSize; i++) {
@@ -230,7 +234,7 @@ public class BannerView extends ViewPager {
             indexViewList.add(imageView);
             bannerIndexLinearLayout.addView(imageView);
         }
-        setOnpageChangeListener(SelectedRes, unSelectedRes);
+        setOnPageChangeListener(SelectedRes, unSelectedRes);
     }
 
     //取消用于控制轮播的timer
@@ -297,7 +301,13 @@ public class BannerView extends ViewPager {
          * @param marginStart             每个index图片的margin值
          */
 
-        public Builder setIndexData(LinearLayout bannerIndexLinearLayout, int SelectedRes, int unSelectedRes, int marginStart, int marginTop, int marginEnd, int marginBottom) {
+        public Builder setIndexData(LinearLayout bannerIndexLinearLayout,
+                                    int SelectedRes,
+                                    int unSelectedRes,
+                                    int marginStart,
+                                    int marginTop,
+                                    int marginEnd,
+                                    int marginBottom) {
             isSetIndexData = true;
             this.llBannerindex = bannerIndexLinearLayout;
             this.Selected = SelectedRes;
