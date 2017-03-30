@@ -1,10 +1,10 @@
-##BannerView
-####github上很多库虽然效果华丽但总觉得使用麻烦且自定义样式困难，很多时候项目也只会用到无限滚动、点击跳转这几个基本功能，所以写了一个比较轻量级的banner方便使用。
+## BannerView
+#### github上很多库虽然效果华丽但总觉得使用麻烦且自定义样式困难，很多时候项目也只会用到无限滚动、点击跳转这几个基本功能，所以写了一个比较轻量级的banner方便使用。
 
-####<li>支持的功能：图片无限滚动，点击图片跳转，自定义指示器位置和图片以及margin参数。
-####<li>支持的数据：大部分banner的API都会给一个包含imageurl和linkurl的ArrayList。所以控件支持的也是这样的数据。
-##依赖：
-####在project build.gradle中加入仓库url
+#### <li>支持的功能：图片无限滚动，点击图片跳转，自定义指示器位置和图片以及margin参数。
+#### <li>支持的数据：大部分banner的API都会给一个包含imageurl和linkurl的ArrayList。所以控件支持的也是这样的数据。
+## 依赖：
+#### 在project build.gradle中加入仓库url
         allprojects {
 		repositories {
 			...
@@ -12,15 +12,15 @@
 		}
 	}
 	
-####在module build.gradle中加入依赖
+#### 在module build.gradle中加入依赖
     dependencies {
 	        compile 'com.github.xiejinpeng007:BannerView:1.0'
 	}
-####图片加载器依赖于Universal ImageLoader
+#### 图片加载器依赖于Universal ImageLoader
 
 
-##使用：
-####第一步完成用于获取list数据的回调接口BannerView.Listenner
+## 使用：
+#### 第一步完成用于获取list数据的回调接口BannerView.Listenner
 
         listener = new BannerView.Listener() {
             /**
@@ -43,7 +43,7 @@
             }
         };
 
-####第二步使用BannerView内置的Builder完成参数设置
+#### 第二步使用BannerView内置的Builder完成参数设置
 
         /**
          * 构造方法参数 控件bannerView的实例,图片个数,用于获取url的接口
