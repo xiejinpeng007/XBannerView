@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical"
-    tools:context=".Activity.BannerViewDemoActivity">
+    tools:context=".Activity.ui.BannerViewDemoActivity">
 
     <com.example.xiejinpeng.bannerview.BannerView
-        android:id="@+id/bv_demo"
+        android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
     </com.example.xiejinpeng.bannerview.BannerView>
 
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:id="@+id/ll_index"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"></LinearLayout>
 </LinearLayout>
+</layout>

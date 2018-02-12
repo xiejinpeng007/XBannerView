@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/banner_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sub_title"
+            android:layout_marginEnd="14dp"
+            android:layout_marginStart="14dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            tools:text="This is the BannerView Title"
+            tools:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginStart="14dp"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            tools:text="10/11 12:15"
+            tools:textColor="#000000" />
+    </RelativeLayout>
+</layout>
