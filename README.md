@@ -1,4 +1,31 @@
 ## BannerView
+### 2.0
+### Usage
+
+```
+        binding.banner.setAdapter(
+                new BannerView.AdapterBuilder<BannerModel>()
+                        .setData(data)
+                        .setGetImageUrl(BannerModel::getUrl)
+                        .setOnClick(m -> {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(m.getTargetUrl()));
+                            if (intent.resolveActivity(getPackageManager()) != null)
+                                startActivity(intent);
+                        })
+                        .setGetTitle(BannerModel::getTitle)
+                        .setGetSubTitle(BannerModel::getSubTitle)
+                        .setAutoScrollMills(5000L)
+                        .setShowIndicator(true)
+                        .build());
+                        
+```
+
+
+---
+  
+  
+
+### 1.0
 #### github上很多库虽然效果华丽但总觉得使用麻烦且自定义样式困难，很多时候项目也只会用到无限滚动、点击跳转这几个基本功能，所以写了一个比较轻量级的banner方便使用。
 
 #### <li>支持的功能：图片无限滚动，点击图片跳转，自定义指示器位置和图片以及margin参数。
